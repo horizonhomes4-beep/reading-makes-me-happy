@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isInstructor() { return signedIn() && request.auth.token.labAdmin == true; }
+    match /instructorRequests/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.status == 'pending'
+        && request.resource.data.keys().hasOnly(['uid','email','displayName','reason','status','requestedAt'])
+        && request.resource.data.reason is string && request.resource.data.reason.size() <= 500;
+      allow update: if signedIn() && request.auth.uid == uid
+        && resource.data.status == 'pending'
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.status == 'pending'
+        && request.resource.data.keys().hasOnly(['uid','email','displayName','reason','status','requestedAt'])
+        && request.resource.data.reason is string && request.resource.data.reason.size() <= 500;
+      allow read: if isInstructor() || (signedIn() && request.auth.uid == uid);
+      allow delete: if false;
+    }
+    // Legacy manually shared records remain visible to instructors; clients cannot overwrite the archive.
+    match /sharedEmails/{uid} {
+      allow read: if isInstructor() || (signedIn() && request.auth.uid == uid);
+      allow write: if false;
+    }
+    // Only trusted Cloud Functions (Admin SDK) may create archived message records.
+    match /classMessages/{messageId} {
+      allow read: if isInstructor();
+      allow write: if false;
+    }
+    // Student may read their own connection status. Instructors may monitor all students.
+    match /integrationStatus/{uid} {
+      allow read: if isInstructor() || (signedIn() && request.auth.uid == uid);
+      allow write: if false;
+    }
+    // OAuth state, refresh tokens and provider credentials are server-only.
+    match /privateIntegrations/{document=**} { allow read, write: if false; }
+    match /oauthStates/{stateId} { allow read, write: if false; }
+  }
+}
