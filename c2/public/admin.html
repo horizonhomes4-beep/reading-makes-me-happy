@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Instructor Gmail Dashboard</title><link rel="stylesheet" href="styles.css"></head><body>
+<header><div class="inner"><h1>Instructor Administrator Page</h1><p>Review only the Gmail messages students deliberately shared</p></div></header>
+<main>
+<section class="card"><h2>1. Instructor sign-in</h2><p class="muted">Sign in with an account already verified by the project owner (Firebase custom claim labAdmin=true). First administrator setup is completed once by the project owner using the included secure command-line script. Student accounts cannot view this page's shared-message list.</p><div class="row"><button id="signin">Sign in as Instructor</button><button id="signout" class="secondary" disabled>Sign out</button><button id="refresh" class="secondary" disabled>Refresh list</button></div><p id="status" class="status">Not signed in.</p><p class="muted">Need instructor access? <a href="instructor-setup.html">Submit an instructor verification request</a>.</p></section>
+<section class="card"><h2>2. Instructor verification requests</h2><p class="muted">Review pending instructor requests. Only an already verified administrator can approve or reject requests.</p><div id="requests"><p class="muted">Sign in as an authorised administrator to review requests.</p></div></section>
+<section class="card"><h2>3. Student-shared Gmail messages</h2><p class="muted">Each record is one message a student intentionally shared from the Student Page. The administrator page does not independently access students' Gmail accounts.</p><div id="list"><p class="muted">Sign in as an authorised instructor to load records.</p></div></section>
+<section class="card"><h2>4. Student-shared SMS</h2>
+<p class="muted">Only SMS records students imported, selected and explicitly shared are shown.</p>
+<div class="filters"><input id="smsSearch" placeholder="Search contact, number or message"><input id="smsDate" type="date" aria-label="Filter SMS by date"></div>
+<div id="smsList"><p class="muted">Sign in as an authorised instructor to load records.</p></div></section>
+<section class="card"><h2>5. Student-shared Call History</h2>
+<p class="muted">Only call-history records students imported, selected and explicitly shared are shown.</p>
+<div class="filters"><input id="callsSearch" placeholder="Search contact or phone number"><input id="callsDate" type="date" aria-label="Filter calls by date"></div>
+<div id="callsList"><p class="muted">Sign in as an authorised instructor to load records.</p></div></section>
+<section class="card"><h2>6. Activity log</h2><div id="log" class="log">Administrator page loaded.</div></section>
+</main><footer>Instructor-only dashboard • Firebase Authentication and Firestore rules</footer>
+<script type="module" src="admin.js"></script></body></html>
